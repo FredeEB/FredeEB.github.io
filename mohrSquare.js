@@ -19,6 +19,15 @@ class mohrSquare {
     this.modfactor = 3.5;
   }
 
+  calcActive(a, b, c, d) {
+    return a + b * c + d * (this.scl - b * c * 2) / this.def
+  }
+  // a = koordinaten, b = k, c = mod[i], d = +scl|!+scl
+  calcPassive(a, b, c) {
+
+    return a + b * c
+  }
+
   //makes the coordinates of the mohr square
   make() {
     //used for randomizing normal axis
@@ -34,25 +43,25 @@ class mohrSquare {
 
       //makes the top side
       for (let i = 0; i <= this.def; i++) {
-        this.coords[k][j] = new p5.Vector(this.x + mod[i] * k + i * (this.scl - mod[i] * k * 2) / this.def, this.y + k * mod[j]);
+        this.coords[k][j] = new p5.Vector(this.calcActive(this.x,mod[i],k,i), this.calcPassive(this.y,mod[i],k));
         j++;
       }
 
       //makes the right side
       for (let i = 1; i <= this.def; i++) {
-        this.coords[k][j] = new p5.Vector(this.x - k * mod[j] + this.scl, this.y + mod[i] * k + i * (this.scl - mod[i] * k * 2) / this.def);
+        this.coords[k][j] = new p5.Vector(this.calcPassive(this.x,mod[i],k,1)+this.scl/2, this.calcActive(this.y,mod[i],k,i));
         j++;
       }
 
       //makes the bottom
-      for (let i = this.def-1; i >= 0; i--) {
-        this.coords[k][j] = new p5.Vector(this.x + mod[i] * k + i * (this.scl - mod[i] * k * 2) / this.def, this.y - k * mod[j] + this.scl);
+      for (let i = this.def - 1; i >= 0; i--) {
+        this.coords[k][j] = new p5.Vector(this.calcActive(this.x,mod[i],k,i), this.calcPassive(this.y,mod[i],k)+this.scl/2);
         j++;
       }
 
       //makes the left side
-      for (let i = this.def-1; i >= 1; i--) {
-        this.coords[k][j] = new p5.Vector(this.x + k * mod[j], this.y + mod[i] * k + i * (this.scl - mod[i] * k * 2) / this.def);
+      for (let i = this.def - 1; i >= 1; i--) {
+        this.coords[k][j] = new p5.Vector(this.calcPassive(this.x,mod[i],k), this.calcActive(this.y,mod[i],k,i));
         j++;
       }
     }
@@ -73,13 +82,13 @@ class mohrSquare {
       for (let i = 0; i < this.coords[0].length; i++) {
         vertex(this.coords[j][i].x, this.coords[j][i].y);
       }
-      if (j == this.coords.length-1){
+      if (j == this.coords.length - 1) {
         fill(0)
       }
       endShape(CLOSE);
     }
   }
-  update(){
+  update() {
     this.display()
   }
 }

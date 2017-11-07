@@ -19,7 +19,3 @@ function setup() {
     }
   }
 }
-
-function windowResized(){
-  c.size(windowWidth,windowHeight)
-}
